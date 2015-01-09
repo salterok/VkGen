@@ -12,7 +12,8 @@ namespace VkApiBuilder
         public static void Main()
         {
             var parser = new Parser();
-            var result = parser.Parse();
+            parser.NotifyState += text => Console.WriteLine(text);
+            parser.Parse().Wait();
         }
     }
 }

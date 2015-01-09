@@ -16,6 +16,8 @@ namespace VkApiParser
 
         public bool IsRequireAccessToken { get; set; }
 
+        public List<string> AccessRights { get; set; }
+
         public List<Parameter> Parameters { get; set; }
 
         public ResultType ResultType { get; set; }
