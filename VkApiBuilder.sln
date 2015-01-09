@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkApiGenerator", "VkApiGenerator\VkApiGenerator.csproj", "{83281A7D-95EB-442A-AB13-E5A1EF217104}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkApiParser", "VkApiParser\VkApiParser.csproj", "{C66B2F95-2D07-452F-AAB8-A3FFEB1DF185}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkApiBuilder", "VkApiBuilder\VkApiBuilder.csproj", "{4E00D292-C3B8-4AC6-8A0D-DB69D6ED920F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83281A7D-95EB-442A-AB13-E5A1EF217104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83281A7D-95EB-442A-AB13-E5A1EF217104}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83281A7D-95EB-442A-AB13-E5A1EF217104}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83281A7D-95EB-442A-AB13-E5A1EF217104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C66B2F95-2D07-452F-AAB8-A3FFEB1DF185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C66B2F95-2D07-452F-AAB8-A3FFEB1DF185}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C66B2F95-2D07-452F-AAB8-A3FFEB1DF185}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C66B2F95-2D07-452F-AAB8-A3FFEB1DF185}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E00D292-C3B8-4AC6-8A0D-DB69D6ED920F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E00D292-C3B8-4AC6-8A0D-DB69D6ED920F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E00D292-C3B8-4AC6-8A0D-DB69D6ED920F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E00D292-C3B8-4AC6-8A0D-DB69D6ED920F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
