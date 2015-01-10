@@ -15,11 +15,17 @@ namespace VkApiParser
         public string Description { get; set; }
 
         public bool IsRequireAccessToken { get; set; }
-
+        
         public List<string> AccessRights { get; set; }
 
         public List<Parameter> Parameters { get; set; }
 
         public ResultType ResultType { get; set; }
+
+        public Method() 
+        {
+            AccessRights = new List<string>();
+            Parameters = new List<Parameter>();
+        }
     }
 }

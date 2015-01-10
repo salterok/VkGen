@@ -120,6 +120,21 @@
   <data name="API_GROUPS" xml:space="preserve">
     <value>//div[contains(@class, 'dev_page_block')]/div[contains(@class, 'dev_methods_sect_rows')]</value>
   </data>
+  <data name="API_METHOD_DESC" xml:space="preserve">
+    <value>div[contains(@class, 'dev_method_desc')]</value>
+  </data>
+  <data name="API_METHOD_DETAILS" xml:space="preserve">
+    <value>div[contains(@class, 'dev_sett_block')]</value>
+  </data>
+  <data name="API_METHOD_PAGE" xml:space="preserve">
+    <value>//div[contains(@class, 'dev_method_page')]</value>
+  </data>
+  <data name="API_METHOD_PARAMS" xml:space="preserve">
+    <value>//table[contains(@class, 'dev_params_table')]/tr[contains(@class, 'dev_param_row')]</value>
+  </data>
+  <data name="API_METHOD_RESULT" xml:space="preserve">
+    <value>div[contains(@class, 'dev_method_res')]</value>
+  </data>
   <data name="BASE_DEV_URL" xml:space="preserve">
     <value>https://vk.com/dev/</value>
   </data>

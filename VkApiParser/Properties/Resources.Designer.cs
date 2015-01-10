@@ -70,6 +70,51 @@ namespace VkApiParser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to div[contains(@class, &apos;dev_method_desc&apos;)].
+        /// </summary>
+        internal static string API_METHOD_DESC {
+            get {
+                return ResourceManager.GetString("API_METHOD_DESC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to div[contains(@class, &apos;dev_sett_block&apos;)].
+        /// </summary>
+        internal static string API_METHOD_DETAILS {
+            get {
+                return ResourceManager.GetString("API_METHOD_DETAILS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to //div[contains(@class, &apos;dev_method_page&apos;)].
+        /// </summary>
+        internal static string API_METHOD_PAGE {
+            get {
+                return ResourceManager.GetString("API_METHOD_PAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to //table[contains(@class, &apos;dev_params_table&apos;)]/tr[contains(@class, &apos;dev_param_row&apos;)].
+        /// </summary>
+        internal static string API_METHOD_PARAMS {
+            get {
+                return ResourceManager.GetString("API_METHOD_PARAMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to div[contains(@class, &apos;dev_method_res&apos;)].
+        /// </summary>
+        internal static string API_METHOD_RESULT {
+            get {
+                return ResourceManager.GetString("API_METHOD_RESULT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://vk.com/dev/.
         /// </summary>
         internal static string BASE_DEV_URL {
