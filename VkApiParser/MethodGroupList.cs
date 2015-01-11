@@ -8,6 +8,6 @@ namespace VkApiParser
 {
     public sealed class MethodGroupList : List<MethodGroup>
     {
-
+        public Version ApiVersion { get; set; }
     }
 }

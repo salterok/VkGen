@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
 using HtmlAgilityPack;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace VkApiParser
 {
@@ -16,6 +18,12 @@ namespace VkApiParser
 
         private HttpClient http = new HttpClient();
 
+        #region value collectors
+        private List<string> methodParamTypeValues = new List<string>();
+        private List<string> methodReturnTypeValues = new List<string>();
+        //private List<string> methodParamTypeValues = new List<string>();
+        #endregion
+
         public Parser()
         {
             http.BaseAddress = new Uri(Properties.Resources.BASE_DEV_URL);
@@ -25,6 +33,9 @@ namespace VkApiParser
 
         public async Task Parse()
         {
+
+
+
             var groups = await ParseApiListByGroups();
             if (groups == null)
             {
@@ -34,17 +45,19 @@ namespace VkApiParser
             foreach (var group in groups)
             {
                 Notify("Process " + group.Title + " group");
-                var tasks = group.Select(method => ParseApiMethod(method));
-                Task.WaitAll(tasks.ToArray());
+                //var tasks = group.Select(method => ParseApiMethod(method));
+                //Task.WaitAll(tasks.ToArray());
 
-                //group.ForEach(method => ParseApiMethod(method).Wait());
+                group.ForEach(method => ParseApiMethod(method).Wait());
             }
 
+            SaveValuesList("MethodParamTypeValues", methodParamTypeValues.Select(v => v.Trim()).Distinct());
+            
+        }
 
-            string ttttttt = String.Join("\n", v.Distinct());
-
-            var t = 5;
-
+        private void SaveValuesList(string name, IEnumerable<string> content)
+        {
+            File.WriteAllLines(name + ".txt", content);
         }
 
         /// <summary>
@@ -141,26 +154,25 @@ namespace VkApiParser
             //FillMethodDetails(method, node.InnerText);
             // TODO: parse method parameters
             var nodes = main.SelectNodes(Properties.Resources.API_METHOD_PARAMS);
-            if (nodes == null)
+            if (nodes != null)
             {
-                return;
-            }
-            foreach (var tNode in nodes)
-            {
-                var parameter = ParseMethodParameter(tNode);
-                if (parameter == null)
+                foreach (var tNode in nodes)
                 {
-                    // exit even if only one parameter can't be parsed
-                    return;
+                    var parameter = ParseMethodParameter(tNode);
+                    if (parameter == null)
+                    {
+                        // exit even if only one parameter can't be parsed
+                        return;
+                    }
+                    method.Parameters.Add(parameter);
                 }
-                method.Parameters.Add(parameter);
             }
             node = main.SelectSingleNode(Properties.Resources.API_METHOD_RESULT);
             if (node == null)
             {
                 return;
             }
-            //FillMethodReturnType(method, node.InnerText
+            //FillMethodReturnType(method, node.InnerText);
         }
 
         private Parameter ParseMethodParameter(HtmlNode pNode)
@@ -187,35 +199,101 @@ namespace VkApiParser
             parameter.Type = ParseResultType(opts);
 
             return parameter;
-            //throw new NotImplementedException();
         }
-        List<string> v = new List<string>();
+        
         private ResultType ParseResultType(string opts_text)
         {
-            string type = null;
+            var type = new ResultType();
+            Match match = null;
             var opts = opts_text.Split(',');
-            v.AddRange(opts);
+            methodParamTypeValues.AddRange(opts);
             foreach (var opt in opts)
             {
-                //CheckParameterType(opt.Trim(), ref type);
-
+                if (opt.Contains("required parameter"))
+                {
+                    type.IsRequired = true;
+                }
+                string ptype = null;
+                var typeFound = CheckParameterType(opt.Trim(), ref ptype);
+                if (typeFound)
+                {
+                    type.Type = ptype;
+                    continue;
+                }
+                else
+                {
+                    var regex = new Regex(@"^list (?:of )?comma-separated (.+)$", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                    match = regex.Match(opt);
+                    if (match.Success)
+                    {
+                        CheckParameterType(match.Groups[1].Value.Trim(), ref ptype);
+                        type.Type = ptype;
+                        type.IsList = true;
+                        continue;
+                    }
+                }
+                // check restrictions
+                var checkMaxElements = new Regex(@"elements allowed is (\d+)$", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                match = checkMaxElements.Match(opt);
+                if (match.Success) 
+                {
+                    uint maxElements;
+                    if (uint.TryParse(match.Groups[1].Value, out maxElements))
+                    {
+                        type.MaxElements = maxElements;
+                        continue;
+                    }
+                }
+                // maximum value 1000
+                var valueRestriction = new Regex(@"(?<minmax>\w+) value (?<value>\d+)$", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                match = valueRestriction.Match(opt);
+                if (match.Success) 
+                {
+                    int value;
+                    if (int.TryParse(match.Groups["value"].Value, out value))
+                    {
+                        switch(match.Groups["minmax"].Value)
+                        {
+                            case "minimum": type.MinValue = value; break;
+                            case "maximum": type.MaxValue = value; break;
+                        }
+                        continue;
+                    }
+                }
+                // minimum length 2
+                var valueLengthRestriction = new Regex(@"(?<minmax>\w+) length (?<value>\d+)$", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                match = valueLengthRestriction.Match(opt);
+                if (match.Success)
+                {
+                    uint value;
+                    if (uint.TryParse(match.Groups["value"].Value, out value))
+                    {
+                        switch(match.Groups["minmax"].Value)
+                        {
+                            case "minimum": type.MinLength = value; break;
+                            case "maximum": type.MaxLength = value; break;
+                        }
+                        continue;
+                    }
+                }
             }
-
-            var isList = opts_text.Contains("list comma-separated strings");
-
-
-            return new ResultType(null);
+            return type;
         }
 
         private bool CheckParameterType(string opt, ref string type)
         {
-            switch (opt)
+            string ptype = null;
+            switch (opt.TrimEnd('s')) // to catch types as 'strings', 'numbers', etc.
             {
-                case "positive number": type = "uint"; break;
-                case "list comma-separated strings": break;
+                case "positive number": ptype = "uint"; break;
+                case "number": ptype = "int"; break;
+                case "int (number)": ptype = "int"; break;
+                case "string": ptype = "string"; break;
+                case "flag": ptype = "bool"; break;
+                case "fraction": ptype = "fraction"; break;
             }
-
-            return true;
+            type = ptype;
+            return !(ptype == null); // true if set
         }
         /// <summary>
         /// Parse <paramref name="text"/> and extract info about access_token|access_rights required.

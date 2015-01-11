@@ -55,6 +55,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ResultType.cs" />
+    <Compile Include="XmlObjectStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
