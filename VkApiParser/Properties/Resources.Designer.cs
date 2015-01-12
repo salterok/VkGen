@@ -115,6 +115,15 @@ namespace VkApiParser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to //div[contains(@id,&apos;dev_page_cont&apos;)]/div/div[contains(@class, &apos;dev_version&apos;)].
+        /// </summary>
+        internal static string API_VERSIONS_SELECTOR {
+            get {
+                return ResourceManager.GetString("API_VERSIONS_SELECTOR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://vk.com/dev/.
         /// </summary>
         internal static string BASE_DEV_URL {

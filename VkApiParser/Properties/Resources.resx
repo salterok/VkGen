@@ -135,6 +135,9 @@
   <data name="API_METHOD_RESULT" xml:space="preserve">
     <value>div[contains(@class, 'dev_method_res')]</value>
   </data>
+  <data name="API_VERSIONS_SELECTOR" xml:space="preserve">
+    <value>//div[contains(@id,'dev_page_cont')]/div/div[contains(@class, 'dev_version')]</value>
+  </data>
   <data name="BASE_DEV_URL" xml:space="preserve">
     <value>https://vk.com/dev/</value>
   </data>

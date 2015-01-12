@@ -31,10 +31,19 @@ namespace VkApiParser
             http.DefaultRequestHeaders.Add("cookie", "remixlang=3;");
         }
 
-        public async Task Parse()
+        public async Task Parse(Version version = null)
         {
-
-
+            Notify("Parsing available versions...");
+            var versions = await ParseVersions();
+            if (TrySelectAppropriateVersion(ref version, versions))
+            {
+                Notify("Version " + version.ToString(2) + " selected");
+            }
+            else
+            {
+                Notify("Can't find version " + version.ToString(2));
+                return;
+            }
 
             var groups = await ParseApiListByGroups();
             if (groups == null)
@@ -53,6 +62,67 @@ namespace VkApiParser
 
             SaveValuesList("MethodParamTypeValues", methodParamTypeValues.Select(v => v.Trim()).Distinct());
             
+        }
+
+        private bool TrySelectAppropriateVersion(ref Version version, Dictionary<Version, ApiVersion> versions)
+        {
+            if (versions == null || versions.Count == 0)
+            {
+                return false;
+            }
+            if (version == null)
+            {
+                // select last available
+                version = versions.Max(pair => pair.Key);
+                return true;
+            }
+            else
+            {
+                Version ver = version;
+                var temp = versions.FirstOrDefault(pair => pair.Key.Equals(ver));
+                bool exist = !temp.Equals(default(KeyValuePair<Version, ApiVersion>));
+                return exist;
+            }
+        }
+
+        private async Task<Dictionary<Version, ApiVersion>> ParseVersions()
+        {
+            var versions = new Dictionary<Version, ApiVersion>();
+            var response = await http.GetStringAsync("versions");
+            var doc = new HtmlDocument();
+            doc.LoadHtml(response);
+            var nodes = doc.DocumentNode.SelectNodes(Properties.Resources.API_VERSIONS_SELECTOR);
+            if (nodes == null)
+            {
+                return null;
+            }
+            foreach (var node in nodes)
+            {
+                var apiVersion = new ApiVersion();
+                var pnode = node.SelectSingleNode("span[contains(@class, 'dev_version_num')]");
+                if (pnode == null)
+                {
+                    continue;
+                }
+                var text = pnode.InnerText.Trim();
+                Version version;
+                if (Version.TryParse(text, out version))
+                {
+                    apiVersion.Version = version;
+                }
+                else
+                {
+                    continue;
+                }
+                pnode = node.SelectSingleNode("div[contains(@class, 'dev_versions_info')]");
+                if (pnode == null)
+                {
+                    continue;
+                }
+                apiVersion.Desciption = pnode.InnerText.Trim();
+                versions.Add(version, apiVersion);
+            }
+            return versions;
         }
 
         private void SaveValuesList(string name, IEnumerable<string> content)
